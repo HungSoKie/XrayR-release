@@ -147,8 +147,18 @@ install_XrayR() {
     systemctl stop XrayR
     systemctl enable XrayR
     echo -e "${green}XrayR ${last_version}${plain} 安装完成，已设置开机自启"
-    cp geoip.dat /etc/XrayR/
-    cp geosite.dat /etc/XrayR/ 
+    geoip_url="https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
+    geosite_url="https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
+    wget -q -N --no-check-certificate -O /etc/XrayR/geoip.dat "${geoip_url}"
+    if [[ $? -ne 0 ]]; then
+        echo -e "${red}下载最新 geoip.dat 失败，请确保你的服务器能够访问 Github${plain}"
+        exit 1
+    fi
+    wget -q -N --no-check-certificate -O /etc/XrayR/geosite.dat "${geosite_url}"
+    if [[ $? -ne 0 ]]; then
+        echo -e "${red}下载最新 geosite.dat 失败，请确保你的服务器能够访问 Github${plain}"
+        exit 1
+    fi
 
     if [[ ! -f /etc/XrayR/config.yml ]]; then
         cp config.yml /etc/XrayR/
